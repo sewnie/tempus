@@ -59,8 +59,11 @@ public class SettingsFragment extends Fragment {
                               @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Add the PreferenceFragment only the first time
-        if (savedInstanceState == null) {
+        // Add the PreferenceFragment only the first time. savedInstanceState is also null when
+        // this fragment comes back from the back stack (e.g. after a settings subpage), while the
+        // child fragment is still held by the child fragment manager; replacing it then would
+        // throw away its state, such as which categories are expanded.
+        if (getChildFragmentManager().findFragmentById(R.id.settings_container) == null) {
             SettingsContainerFragment prefFragment = new SettingsContainerFragment();
 
             // Use the child fragment manager so the PreferenceFragment is scoped to this fragment
